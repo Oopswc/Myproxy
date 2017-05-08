@@ -5,4 +5,4 @@ from Proxy.web.you import  You
 
 kuai = Kuai()
 xici = Xici()
-you  = You()
+you = You()

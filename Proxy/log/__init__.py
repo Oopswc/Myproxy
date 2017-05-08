@@ -15,10 +15,10 @@ class Log(logging.Logger):
         self.name = name
         self.level = LEVEL
         logging.Logger.__init__(self, self.name, level=self.level)
-        self.setFileHandler()
-        self.setStreamHandler()
+        self.__setFileHandler__()
+        self.__setStreamHandler__()
 
-    def setFileHandler(self, level=None):
+    def __setFileHandler__(self, level=None):
         file_name = os.path.join(LOG_PATH, '{name}.log'.format(name=self.name))
         # 设置日志回滚, 保存在log目录, 一天保存一个文件, 保留15天
         file_handler = TimedRotatingFileHandler(filename=file_name, when='D', interval=1, backupCount=15)
@@ -32,7 +32,7 @@ class Log(logging.Logger):
 
         self.addHandler(file_handler)
 
-    def setStreamHandler(self, level=None):
+    def __setStreamHandler__(self, level=None):
         stream_handler = logging.StreamHandler()
         stream_handler.setFormatter(logging.Formatter(FORMATTER))
 
@@ -44,6 +44,6 @@ class Log(logging.Logger):
         self.addHandler(stream_handler)
 
 
-if __name__ =="__main__":
+if __name__ == "__main__":
     log = Log()
     log.info("look at me")
