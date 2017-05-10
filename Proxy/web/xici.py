@@ -2,6 +2,8 @@
 
 import requests
 from lxml import etree
+
+from Proxy.error import check
 from Proxy.log import Log
 
 PAGE = 5
@@ -21,19 +23,27 @@ class Xici(object):
         pass
 
     @staticmethod
+    @check
     def get_response(url):
         resp = requests.get(url=url, headers = HEADER)
         resp.encoding = resp.apparent_encoding
         resp.raise_for_status
         return resp
 
-    def get_iplist(self):
+    @property
+    def ips(self):
         for url in URL:
             r = self.get_response(url)
-            html = etree.HTML(r.text)
-            iplist = html.xpath(XPATH)
-            for ip in iplist:
-                yield ':'.join(ip.xpath(".//td/text()")[:2])
+            try:
+                html = etree.HTML(r.text)
+            except AttributeError as e:
+                self.log.error("Response is None,ErrorType:%s"%e)
+            else:
+                iplist = html.xpath(XPATH)
+                for ip in iplist:
+                    proxy = ':'.join(ip.xpath(".//td/text()")[:2])
+                    self.log.info("Find:%s" % proxy)
+                    yield proxy
 
 if __name__ == "__main__":
     a = Xici()

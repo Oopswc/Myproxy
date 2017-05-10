@@ -29,22 +29,32 @@ class You(object):
         resp.raise_for_status
         return resp
 
-    def get_iplist(self):
+    @property
+    def ips(self):
         lis = []
         start_resp = self.get_response(start_url)
-        html = etree.HTML(start_resp.text)
-        parse_url = html.xpath(XPATH)[0]
-        Num = re.search("\d+",parse_url)
-        link = re.sub("\d+",Num.group(0)+"_{index}",parse_url)
-        URL = (link.format(index=ind) for ind in range(2, PAGE + 1))
+        try:
+            html = etree.HTML(start_resp.text)
+        except AttributeError as e:
+            self.log.error("Response is None,ErrorType:%s" % e)
+        else:
+            parse_url = html.xpath(XPATH)[0]
+            num = re.search("\d+",parse_url)
+            link = re.sub("\d+",num.group(0)+"_{index}",parse_url)
+            urls = (link.format(index=ind) for ind in range(2, PAGE + 1))
 
-        r = self.get_response(parse_url)
-        lis = lis + re.findall("(?:\d{1,3}\.){3}\d{1,3}\:\d{1,4}", r.text)
-        for url in URL:
-            r = self.get_response(url)
-            lis = lis + re.findall("(?:\d{1,3}\.){3}\d{1,3}\:\d{1,4}",r.text)
-        for x in lis:
-            yield x
+            r = self.get_response(parse_url)
+            try:
+                lis = lis + re.findall("(?:\d{1,3}\.){3}\d{1,3}\:\d{1,4}", r.text)
+            except AttributeError as e:
+                self.log.error("Response is None,ErrorType:%s" % e)
+            else:
+                for url in urls:
+                    r = self.get_response(url)
+                    lis = lis + re.findall("(?:\d{1,3}\.){3}\d{1,3}\:\d{1,4}",r.text)
+                for x in lis:
+                    self.log.info("Find:%s" % x)
+                    yield x
 
 
 if __name__ == "__main__":
