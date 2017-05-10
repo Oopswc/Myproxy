@@ -1,4 +1,6 @@
 from Proxy.DB.mongodb import Mongo
 
+DBNAME = "database"
+COLLECTION = "proxy"
 
-db = Mongo()
+db = Mongo(DBNAME, COLLECTION)
