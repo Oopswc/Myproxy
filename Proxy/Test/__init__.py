@@ -1,15 +1,40 @@
-from Proxy.web.error import check
 import requests
-import re
+from Proxy.error import Linkexception
+from Proxy.log import Log
 
+
+log = Log("Test_link")
 url = "https://www.baidu.com"
 
 
 def test_link(proxy):
     try:
-        proxies = {"https":"https://{proxy}".format(proxy = proxy)}
-        resp = requests.get(url = url, proxies = proxies,timeout = 10, verify = False)
-        print(resp.text)
-        print("Proxy :{proxy} is OK.".format(proxy = proxy))
+        proxies = {"https": "https://{proxy}".format(proxy=proxy)}
+        resp = requests.get(url=url, proxies=proxies, timeout=10, verify=False)
+        resp.raise_for_status
+    except Linkexception as e:
+        log.error("%s,proxy :%s"%(e, proxy))
+    except IOError as e:
+        log.error("%s,proxy :%s"%(e, proxy))
+    except requests.ProxyError as e:
+        log.error("%s,proxy :%s"%(e, proxy))
+    except requests.HTTPErrorError as e:
+        log.error("%s,proxy :%s"%(e, proxy))
+    except requests.TimeoutError as e:
+        log.error("%s,proxy :%s"%(e, proxy))
+    except requests.ConnectionError as e:
+        log.error("%s,proxy :%s"%(e, proxy))
+    except requests.ProtocolError as e:
+        log.error("%s,proxy :%s"%(e, proxy))
     except:
         pass
+    else:
+        return True
+
+
+if __name__ == "__main__":
+    # test_link("60.191.170.148:3128")
+    proxy = "223.15.29.181:9797"
+    proxies = {"https": "https://{proxy}".format(proxy=proxy)}
+    resp = requests.get(url=url, proxies=proxies, timeout=10, verify=False)
+    print(resp.status_code)
