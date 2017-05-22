@@ -4,3 +4,4 @@
 4. DB	     finished
 5. Flask
 6. multi_thread
+7.Info from config finished

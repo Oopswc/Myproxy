@@ -1,4 +1,6 @@
+# encoding: utf-8
 from Proxy.log import Log
+
 log = Log("Error")
 
 

@@ -1,3 +1,4 @@
+# encoding: utf-8
 from Proxy.web.kuai import Kuai
 from Proxy.web.xici import Xici
 from Proxy.web.you import  You

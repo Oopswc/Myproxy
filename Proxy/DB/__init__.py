@@ -1,6 +1,6 @@
+# encoding: utf-8
 from Proxy.DB.mongodb import Mongo
+from Proxy.config import DBNAME, COLLECTION
 
-DBNAME = "database"
-COLLECTION = "proxy"
 
 db = Mongo(DBNAME, COLLECTION)
